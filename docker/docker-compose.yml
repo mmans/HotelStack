@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  qloappsv160:
+    image: webkul/qloapps_docker:latest
+    ports:
+      - "80:80"
+    networks:
+      - hotel
+    depends_on:
+      - mariadb
+
+
+  mariadb:
+    image: mariadb:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+    networks:
+      - hotel
+
+#-v /my/own/datadir:/var/lib/mysql:Z 
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    networks:
+      - hotel     
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mariadb
+      - PMA_USER=root
+      - PMA_PASSWORD=my-secret-pw
+
+
+networks:
+  hotel:
